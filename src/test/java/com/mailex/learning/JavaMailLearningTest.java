@@ -26,7 +26,7 @@ public class JavaMailLearningTest extends TestCase {
     private String password = "xxxx"; //change this with your original password
     
 
-    public void testShouldSignInToGmailAccountUsingIMAPsService() throws Exception {
+    public void testShouldSignInToGmailAccountUsingIMAPSSLService() throws Exception {
         Store store = null;
         try {
             store = validIMAPsStore();
