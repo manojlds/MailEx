@@ -1,0 +1,6 @@
+#Lines starting with '#' are considered as comments.
+#ignore any file named .classpath, .project.
+.classpath
+.project
+#ignore all files and sub-directories under target folder.
+target/**/*
