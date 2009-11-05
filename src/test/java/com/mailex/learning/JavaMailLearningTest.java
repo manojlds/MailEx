@@ -17,6 +17,11 @@ import junit.framework.TestCase;
 
 public class JavaMailLearningTest extends TestCase {
 
+    private static final String PROTOCOL_SMTP_SSL = "smtps";
+    private static final String PROTOCOL_IMAP_SSL = "imaps";
+    private static final String HOST_SMTP_GMAIL = "smtp.gmail.com";
+    private static final String HOST_IMAP_GMAIL = "imap.gmail.com";
+    
     private final String userName = "xxx.xxx@gmail.com"; //change this with your original username
     private String password = "xxxx"; //change this with your original password
     
@@ -25,7 +30,7 @@ public class JavaMailLearningTest extends TestCase {
         Store store = null;
         try {
             store = validIMAPsStore();
-            store.connect(getIMAPHost(), userName, password);
+            store.connect(HOST_IMAP_GMAIL, userName, password);
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -39,7 +44,7 @@ public class JavaMailLearningTest extends TestCase {
         Store store = null;
         try {
             store = validIMAPsStore();
-            store.connect(getIMAPHost(), userName, password);
+            store.connect(HOST_IMAP_GMAIL, userName, password);
             Folder inbox = store.getFolder("INBOX");
             inbox.open(Folder.READ_ONLY);
             assertTrue(inbox.getMessageCount() > 0);
@@ -56,8 +61,8 @@ public class JavaMailLearningTest extends TestCase {
         Transport transport = null;
         try {            
             Session session = validSMTPsSession();
-            transport = session.getTransport("smtps");
-            transport.connect(getSMTPHost(), userName, password);
+            transport = session.getTransport(PROTOCOL_SMTP_SSL);
+            transport.connect(HOST_SMTP_GMAIL, userName, password);
         } catch (Exception e) {
             fail(e.getMessage());
         } finally {
@@ -71,8 +76,8 @@ public class JavaMailLearningTest extends TestCase {
         try {            
             Session session = validSMTPsSession();
             MimeMessage email = composeMail(session);            
-            transport = session.getTransport("smtps");            
-            transport.connect(getSMTPHost(), userName, password);
+            transport = session.getTransport(PROTOCOL_SMTP_SSL);            
+            transport.connect(HOST_SMTP_GMAIL, userName, password);
             transport.sendMessage(email, email.getAllRecipients());
         } catch (Exception e) {
             fail(e.getMessage());
@@ -92,34 +97,24 @@ public class JavaMailLearningTest extends TestCase {
         return email;
     }
 
-    private String getIMAPHost() {
-        return "imap.gmail.com";
-    }
-    
-    private String getSMTPHost() {
-        return "smtp.gmail.com";
-    }
-
     private Store validIMAPsStore() throws Exception {
         Session session = Session.getInstance(imapProperties(), null);
-        Store store = session.getStore("imaps");
-        return store;
+        return session.getStore(PROTOCOL_IMAP_SSL);
     }
     
     private Session validSMTPsSession() throws NoSuchProviderException {
-        Session session = Session.getInstance(smtpProperties());
-        return session;
+        return Session.getInstance(smtpProperties());
     }
 
     private Properties imapProperties() {
         Properties imapProperties = System.getProperties();
-        imapProperties.setProperty("mail.store.protocol", "imaps");
+        imapProperties.setProperty("mail.store.protocol", PROTOCOL_IMAP_SSL);
         return imapProperties;
     }
 
     private Properties smtpProperties() {
         Properties smtpProperties = System.getProperties();
-        smtpProperties.put("mail.smtps.host", getSMTPHost());
+        smtpProperties.put("mail.smtps.host", HOST_SMTP_GMAIL);
         smtpProperties.put("mail.smtps.auth", "true");
         return smtpProperties;
     }
